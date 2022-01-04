@@ -31,6 +31,12 @@ Copy-Item -Path "$BackupPathFIPFSPath\Data\Configuration.xml" -Destination "$Ins
 Copy-Item -Path "$BackupPathFIPFSPath\Data\ConfigurationServer.xml" -Destination "$InstallFIPFSPath\Data\ConfigurationServer.xml"
 Copy-Item -Path "$BackupPathFIPFSPath\Data\UpdateInformation.xml" -Destination "$InstallFIPFSPath\Data\UpdateInformation.xml"
 
+#Set proper ACL on Engines directory
+$Sddl = 'O:SYG:SYD:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;LS)(A;OICI;FA;;;NS)(A;OICI;FA;;;BA)'
+$NewSddl = Get-Acl -Path "$InstallFIPFSPath\Data\Engines"
+$NewSddl.SetSecurityDescriptorSddlForm($Sddl)
+Set-Acl -Path "$InstallFIPFSPath\Data\Engines" -AclObject $NewSddl
+
 #Start services
 Start-Service -Name MSExchangeTransport
 Start-Service -Name MSExchangeAntispamUpdate
